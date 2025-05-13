@@ -25,10 +25,18 @@ export default function FilteredNewsPage({ params }) {
     news = getNewsForYearAndMonth(selectedYear, selectedMonth);
     links = [];
   }
-  let newsContent = <p>No news foud for a selected period.</p>;
+  let newsContent = <p>No news found for a selected period.</p>;
 
   if (news && news.length > 0) {
     newsContent = <NewsList news={news} />;
+  }
+
+  if (
+    (selectedYear && !getAvailableNewsYears().includes(+selectedYear)) ||
+    (selectedMonth &&
+      !getAvailableNewsMonths(selectedYear).includes(+selectedMonth))
+  ) {
+    throw new Error("Invalid filter.");
   }
 
   return (
@@ -38,7 +46,7 @@ export default function FilteredNewsPage({ params }) {
           <ul>
             {links.map((link) => {
               const href = selectedYear
-                ? `/archive/${selectedMonth}/${link}`
+                ? `/archive/${selectedYear}/${link}`
                 : `/archive/${link}`;
 
               return (
